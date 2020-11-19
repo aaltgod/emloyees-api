@@ -9,28 +9,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ErrorResponse ...
-type ErrorResponse struct {
+// EmployeeErrorResponse ...
+type EmployeeErrorResponse struct {
 	Message string `json:"message"`
 }
 
-// Handler ...
-type Handler struct {
-	storage Storage
+// EmployeeHandler ...
+type EmployeeHandler struct {
+	storage EmployeeStorage
 }
 
-// NewHandler ...
-func NewHandler(storage Storage) *Handler {
-	return &Handler{storage: storage}
+// NewEmployeeHandler ...
+func NewEmployeeHandler(storage EmployeeStorage) *EmployeeHandler {
+	return &EmployeeHandler{storage: storage}
 }
 
 // CreateEmployee ...
-func (h *Handler) CreateEmployee(c *gin.Context) {
+func (h *EmployeeHandler) CreateEmployee(c *gin.Context) {
 	var employee Employee
 
 	if err := c.BindJSON(&employee); err != nil {
 		fmt.Printf("failed to bind an employee: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
 		return
@@ -39,7 +39,7 @@ func (h *Handler) CreateEmployee(c *gin.Context) {
 	err := h.storage.Insert(&employee)
 	if err != nil {
 		log.Println(err)
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
 
@@ -52,11 +52,11 @@ func (h *Handler) CreateEmployee(c *gin.Context) {
 }
 
 // UpdateEmployee ...
-func (h *Handler) UpdateEmployee(c *gin.Context) {
+func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		fmt.Printf("failed to convert id param to int: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
 		return
@@ -65,7 +65,7 @@ func (h *Handler) UpdateEmployee(c *gin.Context) {
 	var employee Employee
 
 	if err := c.BindJSON(&employee); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
 
@@ -73,7 +73,7 @@ func (h *Handler) UpdateEmployee(c *gin.Context) {
 	}
 
 	if err := h.storage.Update(id, &employee); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
 
@@ -86,11 +86,11 @@ func (h *Handler) UpdateEmployee(c *gin.Context) {
 }
 
 // GetEmployee ...
-func (h *Handler) GetEmployee(c *gin.Context) {
+func (h *EmployeeHandler) GetEmployee(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		fmt.Printf("failed to convert id to int: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
 		return
@@ -99,7 +99,7 @@ func (h *Handler) GetEmployee(c *gin.Context) {
 	employee, err := h.storage.Get(id)
 	if err != nil {
 		fmt.Printf("failed to get employee: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
 		return
@@ -109,18 +109,18 @@ func (h *Handler) GetEmployee(c *gin.Context) {
 }
 
 // DeleteEmployee ...
-func (h *Handler) DeleteEmployee(c *gin.Context) {
+func (h *EmployeeHandler) DeleteEmployee(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		fmt.Printf("failde to convert id to int: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
 		return
 	}
 
 	if err := h.storage.Delete(id); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
 
@@ -131,10 +131,10 @@ func (h *Handler) DeleteEmployee(c *gin.Context) {
 }
 
 // GetAllEmployees ...
-func (h *Handler) GetAllEmployees(c *gin.Context) {
+func (h *EmployeeHandler) GetAllEmployees(c *gin.Context) {
 	employees, err := h.storage.GetAll()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{
+		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
 

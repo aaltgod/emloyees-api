@@ -7,21 +7,20 @@ import (
 	"sync"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Employee ...
 type Employee struct {
-	ID     int    `json:"id"`
-	Name   string `json:"name"`
-	Sex    string `json:"sex"`
-	Age    int    `json:"age"`
-	Salary int    `json:"salary"`
+	ID              int    `json:"id"`
+	Name            string `json:"name"`
+	Sex             string `json:"sex"`
+	Age             int    `json:"age"`
+	Salary          int    `json:"salary"`
+	DepartamentName string `json:"departament"`
 }
 
-// Storage ...
-type Storage interface {
+// EmployeeStorage ...
+type EmployeeStorage interface {
 	Insert(e *Employee) error
 	Get(id int) (Employee, error)
 	Update(id int, e *Employee) error
@@ -29,27 +28,27 @@ type Storage interface {
 	GetAll() (map[int]Employee, error)
 }
 
-// MongoStorage ...
-type MongoStorage struct {
+// EmployeeMongoStorage ...
+type EmployeeMongoStorage struct {
 	counter int
 	sync.Mutex
 }
 
-// NewMongoStorage ...
-func NewMongoStorage() *MongoStorage {
-	return &MongoStorage{
+// NewEmployeeMongoStorage ...
+func NewEmployeeMongoStorage() *EmployeeMongoStorage {
+	return &EmployeeMongoStorage{
 		counter: 1,
 	}
 }
 
 // Insert ...
-func (s *MongoStorage) Insert(e *Employee) error {
+func (s *EmployeeMongoStorage) Insert(e *Employee) error {
 	s.Lock()
 	defer s.Unlock()
 
 	e.ID = s.counter
-	_, err := Collection.InsertOne(context.TODO(), bson.M{
-		"_id":    *&e.ID,
+	_, err := EmployeeCollection.InsertOne(context.TODO(), bson.M{
+		"id":     *&e.ID,
 		"name":   *&e.Name,
 		"sex":    *&e.Sex,
 		"age":    *&e.Age,
@@ -66,15 +65,13 @@ func (s *MongoStorage) Insert(e *Employee) error {
 }
 
 // Get ...
-func (s *MongoStorage) Get(id int) (Employee, error) {
+func (s *EmployeeMongoStorage) Get(id int) (Employee, error) {
 	s.Lock()
 	defer s.Unlock()
 
 	var employee Employee
 
-	employee.ID = id
-
-	err := Collection.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&employee)
+	err := EmployeeCollection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&employee)
 	if err != nil {
 		log.Println(err)
 		return employee, err
@@ -84,16 +81,16 @@ func (s *MongoStorage) Get(id int) (Employee, error) {
 }
 
 // Update ...
-func (s *MongoStorage) Update(id int, e *Employee) error {
+func (s *EmployeeMongoStorage) Update(id int, e *Employee) error {
 	s.Lock()
 	defer s.Unlock()
 
-	_, err := Collection.UpdateOne(
+	_, err := EmployeeCollection.UpdateOne(
 		context.TODO(),
-		bson.M{"_id": id},
+		bson.M{"id": id},
 		bson.D{{"$set",
 			bson.M{
-				"_id":    id,
+				"id":     id,
 				"name":   *&e.Name,
 				"sex":    *&e.Sex,
 				"age":    *&e.Age,
@@ -108,11 +105,11 @@ func (s *MongoStorage) Update(id int, e *Employee) error {
 }
 
 // Delete ...
-func (s *MongoStorage) Delete(id int) error {
+func (s *EmployeeMongoStorage) Delete(id int) error {
 	s.Lock()
 	defer s.Unlock()
 
-	deleteResult, err := Collection.DeleteOne(context.TODO(), bson.M{"_id": id})
+	deleteResult, err := EmployeeCollection.DeleteOne(context.TODO(), bson.M{"id": id})
 	if err != nil {
 		log.Println(err)
 		return err
@@ -126,14 +123,14 @@ func (s *MongoStorage) Delete(id int) error {
 }
 
 /// GetAll ...
-func (s *MongoStorage) GetAll() (map[int]Employee, error) {
+func (s *EmployeeMongoStorage) GetAll() (map[int]Employee, error) {
 	s.Lock()
 	defer s.Unlock()
 
 	var employee Employee
 	var employees map[int]Employee
 
-	cursor, err := Collection.Find(context.TODO(), bson.D{})
+	cursor, err := EmployeeCollection.Find(context.TODO(), bson.D{})
 	if err != nil {
 		log.Println(err)
 
@@ -146,7 +143,7 @@ func (s *MongoStorage) GetAll() (map[int]Employee, error) {
 
 	for cursor.Next(context.TODO()) {
 		if err := cursor.Decode(&employee); err != nil {
-			log.Println(err)
+			log.Println("CURSOR:", err)
 			return employees, err
 		}
 
@@ -154,24 +151,4 @@ func (s *MongoStorage) GetAll() (map[int]Employee, error) {
 	}
 
 	return employees, nil
-}
-
-// Collection ...
-var Collection *mongo.Collection
-
-// ConnectToMongo ...
-func ConnectToMongo() {
-
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		log.Println(err)
-	}
-
-	if err = client.Ping(context.TODO(), nil); err != nil {
-		log.Println(err)
-	}
-
-	Collection = client.Database("rest_api").Collection("rest_api")
 }
