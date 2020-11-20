@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"sync"
 
@@ -11,9 +12,10 @@ import (
 
 // Departament ...
 type Departament struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Employees int    `json:"employees"`
+	ID              int    `json:"id"`
+	Name            string `json:"name"`
+	EmployeesNumber int    `json:"employees_number"`
+	EmployeesIDS    []int  `json:"employees_ids"`
 }
 
 // DepartamentStorage ...
@@ -23,6 +25,7 @@ type DepartamentStorage interface {
 	Update(id int, d *Departament) error
 	Delete(id int) error
 	GetAll() (map[int]Departament, error)
+	InsertEmployeeIntoDepartament(id, employeeID int) error
 }
 
 // DepartamentMongoStorage ...
@@ -45,9 +48,10 @@ func (s *DepartamentMongoStorage) Insert(d *Departament) error {
 
 	d.ID = s.counter
 	_, err := DepartamentCollection.InsertOne(context.TODO(), bson.M{
-		"id":        *&d.ID,
-		"name":      *&d.Name,
-		"employees": *&d.Employees,
+		"id":              *&d.ID,
+		"name":            *&d.Name,
+		"employeesNumber": 0,
+		"employeesIDS":    []int{},
 	})
 	if err != nil {
 		log.Println(err)
@@ -72,6 +76,8 @@ func (s *DepartamentMongoStorage) Get(id int) (Departament, error) {
 		return departament, err
 	}
 
+	fmt.Println(departament)
+
 	return departament, nil
 }
 
@@ -83,18 +89,13 @@ func (s *DepartamentMongoStorage) Update(id int, d *Departament) error {
 	_, err := DepartamentCollection.UpdateOne(
 		context.TODO(),
 		bson.M{"id": id},
-		bson.D{{"$set",
-			bson.M{
-				"id":        id,
-				"name":      *&d.Name,
-				"employess": *&d.Employees,
-			}}})
+		bson.D{{"$set", bson.M{"name": *&d.Name}}})
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
-	return err
+	return nil
 }
 
 // Delete ...
@@ -144,4 +145,37 @@ func (s *DepartamentMongoStorage) GetAll() (map[int]Departament, error) {
 	}
 
 	return departaments, nil
+}
+
+// InsertEmployeeIntoDepartament ...
+func (s *DepartamentMongoStorage) InsertEmployeeIntoDepartament(id, employeeID int) error {
+	s.Lock()
+	defer s.Unlock()
+
+	var departament Departament
+
+	err := DepartamentCollection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&departament)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	employeesIDS := departament.EmployeesIDS
+	employeesIDS = append(employeesIDS, employeeID)
+
+	_, err = DepartamentCollection.UpdateOne(
+		context.TODO(),
+		bson.M{"id": id},
+		bson.D{{"$set", bson.M{
+			"employeesNumber": len(employeesIDS),
+			"employeesIDS":    employeesIDS,
+		}}},
+	)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+
 }

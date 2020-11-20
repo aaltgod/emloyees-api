@@ -14,16 +14,17 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/employees", employeeHandler.GetAllEmployees)
-	router.POST("/employee", employeeHandler.CreateEmployee)
-	router.GET("/employee/:id", employeeHandler.GetEmployee)
-	router.PUT("/employee/:id", employeeHandler.UpdateEmployee)
-	router.DELETE("/employee/:id", employeeHandler.DeleteEmployee)
-	router.GET("/departaments", departamentHandler.GetAllDepartaments)
-	router.POST("/departament", departamentHandler.CreateDepartament)
-	router.GET("/departament/:id", departamentHandler.GetDepartament)
-	router.PUT("/departament/:id", departamentHandler.UpdateDepartament)
-	router.DELETE("/departament/:id", departamentHandler.DeleteDepartament)
+	router.GET("/api/employees", employeeHandler.GetAllEmployees)
+	router.POST("/api/employee", employeeHandler.CreateEmployee)
+	router.GET("/api/employee/:id", employeeHandler.GetEmployee)
+	router.PUT("/api/employee/:id", employeeHandler.UpdateEmployee)
+	router.DELETE("/api/employee/:id", employeeHandler.DeleteEmployee)
+	router.GET("/api/departaments", departamentHandler.GetAllDepartaments)
+	router.POST("/api/departament", departamentHandler.CreateDepartament)
+	router.GET("/api/departament/:id", departamentHandler.GetDepartament)
+	router.PUT("/api/departament/:id", departamentHandler.UpdateDepartament)
+	router.DELETE("/api/departament/:id", departamentHandler.DeleteDepartament)
+	router.PUT("/api/departament/:id/:employee_id", departamentHandler.AddEmployeeToDepartament)
 
 	router.Run(":5001")
 }

@@ -39,7 +39,7 @@ func (h *DepartamentHandler) CreateDepartament(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
@@ -66,7 +66,7 @@ func (h *DepartamentHandler) UpdateDepartament(c *gin.Context) {
 	if err := c.BindJSON(&departament); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
@@ -75,7 +75,7 @@ func (h *DepartamentHandler) UpdateDepartament(c *gin.Context) {
 	if err := h.storage.Update(id, &departament); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
@@ -107,6 +107,7 @@ func (h *DepartamentHandler) GetDepartament(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, departament)
+
 }
 
 // DeleteDepartament ...
@@ -123,7 +124,7 @@ func (h *DepartamentHandler) DeleteDepartament(c *gin.Context) {
 	if err := h.storage.Delete(id); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
@@ -138,11 +139,47 @@ func (h *DepartamentHandler) GetAllDepartaments(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
 	}
 
 	c.JSON(http.StatusOK, departaments)
+}
+
+// AddEmployeeToDepartament ...
+func (h *DepartamentHandler) AddEmployeeToDepartament(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
+			Message: err.Error(),
+		})
+
+		return
+	}
+
+	employeeID, err := strconv.Atoi(c.Param("employee_id"))
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
+			Message: err.Error(),
+		})
+
+		return
+	}
+
+	if err := h.storage.InsertEmployeeIntoDepartament(id, employeeID); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
+			Message: err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]string{
+		"message": "employee was added",
+	})
 }

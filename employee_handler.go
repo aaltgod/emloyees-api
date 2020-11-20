@@ -39,7 +39,7 @@ func (h *EmployeeHandler) CreateEmployee(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
@@ -66,7 +66,7 @@ func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 	if err := c.BindJSON(&employee); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
@@ -75,7 +75,7 @@ func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 	if err := h.storage.Update(id, &employee); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
@@ -122,7 +122,7 @@ func (h *EmployeeHandler) DeleteEmployee(c *gin.Context) {
 
 	if err := h.storage.Delete(id); err != nil {
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
@@ -137,7 +137,7 @@ func (h *EmployeeHandler) GetAllEmployees(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
-			Message: "Ooops, Something went wrong",
+			Message: err.Error(),
 		})
 
 		return
