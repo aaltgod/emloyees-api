@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -29,7 +28,7 @@ func (h *EmployeeHandler) CreateEmployee(c *gin.Context) {
 	var employee Employee
 
 	if err := c.BindJSON(&employee); err != nil {
-		fmt.Printf("failed to bind an employee: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
@@ -55,7 +54,7 @@ func (h *EmployeeHandler) CreateEmployee(c *gin.Context) {
 func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		fmt.Printf("failed to convert id param to int: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
@@ -65,6 +64,7 @@ func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 	var employee Employee
 
 	if err := c.BindJSON(&employee); err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
@@ -73,6 +73,7 @@ func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 	}
 
 	if err := h.storage.Update(id, &employee); err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
@@ -89,7 +90,7 @@ func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 func (h *EmployeeHandler) GetEmployee(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		fmt.Printf("failed to convert id to int: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
@@ -98,7 +99,7 @@ func (h *EmployeeHandler) GetEmployee(c *gin.Context) {
 
 	employee, err := h.storage.Get(id)
 	if err != nil {
-		fmt.Printf("failed to get employee: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
@@ -112,7 +113,7 @@ func (h *EmployeeHandler) GetEmployee(c *gin.Context) {
 func (h *EmployeeHandler) DeleteEmployee(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		fmt.Printf("failde to convert id to int: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: err.Error(),
 		})
@@ -134,13 +135,13 @@ func (h *EmployeeHandler) DeleteEmployee(c *gin.Context) {
 func (h *EmployeeHandler) GetAllEmployees(c *gin.Context) {
 	employees, err := h.storage.GetAll()
 	if err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, EmployeeErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
 
 		return
 	}
-	fmt.Println(employees)
 
 	c.JSON(http.StatusOK, employees)
 }

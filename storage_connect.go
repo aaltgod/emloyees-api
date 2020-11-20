@@ -20,11 +20,11 @@ func ConnectToMongo() {
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 
 	if err = client.Ping(context.TODO(), nil); err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 
 	EmployeeCollection = client.Database("rest_api").Collection("employees")

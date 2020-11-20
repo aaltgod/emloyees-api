@@ -127,8 +127,10 @@ func (s *EmployeeMongoStorage) GetAll() (map[int]Employee, error) {
 	s.Lock()
 	defer s.Unlock()
 
-	var employee Employee
-	var employees map[int]Employee
+	var (
+		employee  Employee
+		employees map[int]Employee
+	)
 
 	cursor, err := EmployeeCollection.Find(context.TODO(), bson.D{})
 	if err != nil {

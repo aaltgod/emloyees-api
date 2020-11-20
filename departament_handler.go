@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -29,7 +28,7 @@ func (h *DepartamentHandler) CreateDepartament(c *gin.Context) {
 	var departament Departament
 
 	if err := c.BindJSON(&departament); err != nil {
-		fmt.Printf("failed to bind an departament: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: err.Error(),
 		})
@@ -55,7 +54,7 @@ func (h *DepartamentHandler) CreateDepartament(c *gin.Context) {
 func (h *DepartamentHandler) UpdateDepartament(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		fmt.Printf("failed to convert id param to int: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: err.Error(),
 		})
@@ -65,6 +64,7 @@ func (h *DepartamentHandler) UpdateDepartament(c *gin.Context) {
 	var departament Departament
 
 	if err := c.BindJSON(&departament); err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
@@ -73,6 +73,7 @@ func (h *DepartamentHandler) UpdateDepartament(c *gin.Context) {
 	}
 
 	if err := h.storage.Update(id, &departament); err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
@@ -89,7 +90,7 @@ func (h *DepartamentHandler) UpdateDepartament(c *gin.Context) {
 func (h *DepartamentHandler) GetDepartament(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		fmt.Printf("failed to convert id to int: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: err.Error(),
 		})
@@ -98,7 +99,7 @@ func (h *DepartamentHandler) GetDepartament(c *gin.Context) {
 
 	departament, err := h.storage.Get(id)
 	if err != nil {
-		fmt.Printf("failed to get departament: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: err.Error(),
 		})
@@ -112,7 +113,7 @@ func (h *DepartamentHandler) GetDepartament(c *gin.Context) {
 func (h *DepartamentHandler) DeleteDepartament(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		fmt.Printf("failde to convert id to int: %s\n", err.Error())
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: err.Error(),
 		})
@@ -120,6 +121,7 @@ func (h *DepartamentHandler) DeleteDepartament(c *gin.Context) {
 	}
 
 	if err := h.storage.Delete(id); err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
@@ -134,13 +136,13 @@ func (h *DepartamentHandler) DeleteDepartament(c *gin.Context) {
 func (h *DepartamentHandler) GetAllDepartaments(c *gin.Context) {
 	departaments, err := h.storage.GetAll()
 	if err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, DepartamentErrorResponse{
 			Message: "Ooops, Something went wrong",
 		})
 
 		return
 	}
-	fmt.Println(departaments)
 
 	c.JSON(http.StatusOK, departaments)
 }
