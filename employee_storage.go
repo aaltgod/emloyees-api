@@ -11,12 +11,11 @@ import (
 
 // Employee ...
 type Employee struct {
-	ID              int    `json:"id"`
-	Name            string `json:"name"`
-	Sex             string `json:"sex"`
-	Age             int    `json:"age"`
-	Salary          int    `json:"salary"`
-	DepartamentName string `json:"departament"`
+	ID     int    `json:"id"`
+	Name   string `json:"name"`
+	Sex    string `json:"sex"`
+	Age    int    `json:"age"`
+	Salary int    `json:"salary"`
 }
 
 // EmployeeStorage ...
