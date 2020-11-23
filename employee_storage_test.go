@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-type test struct {
+type testEmployee struct {
 	name         string
 	employee     Employee
 	wantError    error
@@ -13,7 +13,7 @@ type test struct {
 }
 
 func Test_Employee_Insert(t *testing.T) {
-	tests := []test{
+	tests := []testEmployee{
 		{
 			name: "success",
 			employee: Employee{
@@ -50,7 +50,7 @@ func Test_Employee_Insert(t *testing.T) {
 }
 
 func Test_Employee_Get(t *testing.T) {
-	oneTest := test{
+	oneTest := testEmployee{
 		name: "success",
 		wantEmployee: Employee{
 			ID:     1,
@@ -82,7 +82,7 @@ func Test_Employee_Get(t *testing.T) {
 }
 
 func Test_Employee_Update(t *testing.T) {
-	oneTest := test{
+	oneTest := testEmployee{
 		name: "success",
 		employee: Employee{
 			ID:     1,
@@ -106,7 +106,7 @@ func Test_Employee_Update(t *testing.T) {
 }
 
 func Test_Employee_Delete(t *testing.T) {
-	oneTest := test{
+	oneTest := testEmployee{
 		name: "success",
 		employee: Employee{
 			ID: 1,
@@ -126,8 +126,7 @@ func Test_Employee_Delete(t *testing.T) {
 }
 
 func Test_Employee_GetAll(t *testing.T) {
-
-	oneTest := []test{
+	oneTest := []testEmployee{
 		{
 			wantEmployee: Employee{
 				ID:     1,
