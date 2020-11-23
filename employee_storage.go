@@ -100,7 +100,7 @@ func (s *EmployeeMongoStorage) Update(id int, e *Employee) error {
 		return err
 	}
 
-	return err
+	return nil
 }
 
 // Delete ...
