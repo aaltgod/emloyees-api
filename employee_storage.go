@@ -89,7 +89,6 @@ func (s *EmployeeMongoStorage) Update(id int, e *Employee) error {
 		bson.M{"id": id},
 		bson.D{{"$set",
 			bson.M{
-				"id":     id,
 				"name":   *&e.Name,
 				"sex":    *&e.Sex,
 				"age":    *&e.Age,
