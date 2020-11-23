@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"sync"
 
@@ -75,8 +74,6 @@ func (s *DepartamentMongoStorage) Get(id int) (Departament, error) {
 		log.Println(err)
 		return departament, err
 	}
-
-	fmt.Println(departament)
 
 	return departament, nil
 }
