@@ -4,8 +4,8 @@ import (
 	"github.com/alaskastorm/rest-api/db"
 	"github.com/alaskastorm/rest-api/db/departamentdb"
 	"github.com/alaskastorm/rest-api/db/employeedb"
-	"github.com/alaskastorm/rest-api/server/handler/employeehandler"
-	"github.com/alaskastorm/rest-api/server/handler/departamenthandler"
+	"github.com/alaskastorm/rest-api/api/handler/employeehandler"
+	"github.com/alaskastorm/rest-api/api/handler/departamenthandler"
 	"github.com/gin-gonic/gin"
 )
 
