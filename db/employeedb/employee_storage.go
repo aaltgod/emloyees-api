@@ -1,8 +1,9 @@
-package main
+package employeedb
 
 import (
 	"context"
 	"errors"
+	"github.com/alaskastorm/rest-api/db"
 	"log"
 	"sync"
 
@@ -46,7 +47,7 @@ func (s *EmployeeMongoStorage) Insert(e *Employee) error {
 	defer s.Unlock()
 
 	e.ID = s.counter
-	_, err := EmployeeCollection.InsertOne(context.TODO(), bson.M{
+	_, err := db.EmployeeCollection.InsertOne(context.TODO(), bson.M{
 		"id":     *&e.ID,
 		"name":   *&e.Name,
 		"sex":    *&e.Sex,
@@ -70,7 +71,7 @@ func (s *EmployeeMongoStorage) Get(id int) (Employee, error) {
 
 	var employee Employee
 
-	err := EmployeeCollection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&employee)
+	err := db.EmployeeCollection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&employee)
 	if err != nil {
 		log.Println(err)
 		return employee, err
@@ -84,7 +85,7 @@ func (s *EmployeeMongoStorage) Update(id int, e *Employee) error {
 	s.Lock()
 	defer s.Unlock()
 
-	_, err := EmployeeCollection.UpdateOne(
+	_, err := db.EmployeeCollection.UpdateOne(
 		context.TODO(),
 		bson.M{"id": id},
 		bson.D{{"$set",
@@ -107,7 +108,7 @@ func (s *EmployeeMongoStorage) Delete(id int) error {
 	s.Lock()
 	defer s.Unlock()
 
-	deleteResult, err := EmployeeCollection.DeleteOne(context.TODO(), bson.M{"id": id})
+	deleteResult, err := db.EmployeeCollection.DeleteOne(context.TODO(), bson.M{"id": id})
 	if err != nil {
 		log.Println(err)
 		return err
@@ -130,7 +131,7 @@ func (s *EmployeeMongoStorage) GetAll() (map[int]Employee, error) {
 		employees map[int]Employee
 	)
 
-	cursor, err := EmployeeCollection.Find(context.TODO(), bson.D{})
+	cursor, err := db.EmployeeCollection.Find(context.TODO(), bson.D{})
 	if err != nil {
 		log.Println(err)
 

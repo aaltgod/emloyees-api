@@ -1,6 +1,7 @@
-package main
+package departamenthandler
 
 import (
+	db "github.com/alaskastorm/rest-api/db/departamentdb"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,17 +16,17 @@ type DepartamentErrorResponse struct {
 
 // DepartamentHandler ...
 type DepartamentHandler struct {
-	storage DepartamentStorage
+	storage db.DepartamentStorage
 }
 
 // NewDepartamentHandler ...
-func NewDepartamentHandler(storage DepartamentStorage) *DepartamentHandler {
+func NewDepartamentHandler(storage db.DepartamentStorage) *DepartamentHandler {
 	return &DepartamentHandler{storage: storage}
 }
 
 // CreateDepartament ...
 func (h *DepartamentHandler) CreateDepartament(c *gin.Context) {
-	var departament Departament
+	var departament db.Departament
 
 	if err := c.BindJSON(&departament); err != nil {
 		log.Println(err)
@@ -61,7 +62,7 @@ func (h *DepartamentHandler) UpdateDepartament(c *gin.Context) {
 		return
 	}
 
-	var departament Departament
+	var departament db.Departament
 
 	if err := c.BindJSON(&departament); err != nil {
 		log.Println(err)
@@ -180,6 +181,6 @@ func (h *DepartamentHandler) AddEmployeeToDepartament(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]string{
-		"message": "employee was added",
+		"message": "employeedb was added",
 	})
 }

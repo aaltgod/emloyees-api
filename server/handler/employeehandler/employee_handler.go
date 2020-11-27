@@ -1,6 +1,7 @@
-package main
+package employeehandler
 
 import (
+	db "github.com/alaskastorm/rest-api/db/employeedb"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,17 +16,17 @@ type EmployeeErrorResponse struct {
 
 // EmployeeHandler ...
 type EmployeeHandler struct {
-	storage EmployeeStorage
+	storage db.EmployeeStorage
 }
 
 // NewEmployeeHandler ...
-func NewEmployeeHandler(storage EmployeeStorage) *EmployeeHandler {
+func NewEmployeeHandler(storage db.EmployeeStorage) *EmployeeHandler {
 	return &EmployeeHandler{storage: storage}
 }
 
 // CreateEmployee ...
 func (h *EmployeeHandler) CreateEmployee(c *gin.Context) {
-	var employee Employee
+	var employee db.Employee
 
 	if err := c.BindJSON(&employee); err != nil {
 		log.Println(err)
@@ -61,7 +62,7 @@ func (h *EmployeeHandler) UpdateEmployee(c *gin.Context) {
 		return
 	}
 
-	var employee Employee
+	var employee db.Employee
 
 	if err := c.BindJSON(&employee); err != nil {
 		log.Println(err)

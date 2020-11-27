@@ -1,8 +1,10 @@
-package main
+package departamentdb
 
 import (
 	"context"
 	"errors"
+	"github.com/alaskastorm/rest-api/db"
+
 	"log"
 	"sync"
 
@@ -46,7 +48,7 @@ func (s *DepartamentMongoStorage) Insert(d *Departament) error {
 	defer s.Unlock()
 
 	d.ID = s.counter
-	_, err := DepartamentCollection.InsertOne(context.TODO(), bson.M{
+	_, err := db.DepartamentCollection.InsertOne(context.TODO(), bson.M{
 		"id":              *&d.ID,
 		"name":            *&d.Name,
 		"employeesNumber": 0,
@@ -69,7 +71,7 @@ func (s *DepartamentMongoStorage) Get(id int) (Departament, error) {
 
 	var departament Departament
 
-	err := DepartamentCollection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&departament)
+	err := db.DepartamentCollection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&departament)
 	if err != nil {
 		log.Println(err)
 		return departament, err
@@ -83,7 +85,7 @@ func (s *DepartamentMongoStorage) Update(id int, d *Departament) error {
 	s.Lock()
 	defer s.Unlock()
 
-	_, err := DepartamentCollection.UpdateOne(
+	_, err := db.DepartamentCollection.UpdateOne(
 		context.TODO(),
 		bson.M{"id": id},
 		bson.D{{"$set", bson.M{"name": *&d.Name}}})
@@ -100,7 +102,7 @@ func (s *DepartamentMongoStorage) Delete(id int) error {
 	s.Lock()
 	defer s.Unlock()
 
-	deleteResult, err := DepartamentCollection.DeleteOne(context.TODO(), bson.M{"id": id})
+	deleteResult, err := db.DepartamentCollection.DeleteOne(context.TODO(), bson.M{"id": id})
 	if err != nil {
 		log.Println(err)
 		return err
@@ -121,7 +123,7 @@ func (s *DepartamentMongoStorage) GetAll() (map[int]Departament, error) {
 	var departament Departament
 	var departaments map[int]Departament
 
-	cursor, err := DepartamentCollection.Find(context.TODO(), bson.D{})
+	cursor, err := db.DepartamentCollection.Find(context.TODO(), bson.D{})
 	if err != nil {
 		log.Println(err)
 
@@ -151,7 +153,7 @@ func (s *DepartamentMongoStorage) InsertEmployeeIntoDepartament(id, employeeID i
 
 	var departament Departament
 
-	err := DepartamentCollection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&departament)
+	err := db.DepartamentCollection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&departament)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -160,7 +162,7 @@ func (s *DepartamentMongoStorage) InsertEmployeeIntoDepartament(id, employeeID i
 	employeesIDS := departament.EmployeesIDS
 	employeesIDS = append(employeesIDS, employeeID)
 
-	_, err = DepartamentCollection.UpdateOne(
+	_, err = db.DepartamentCollection.UpdateOne(
 		context.TODO(),
 		bson.M{"id": id},
 		bson.D{{"$set", bson.M{

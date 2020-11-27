@@ -1,6 +1,8 @@
-package main
+package employeedb
 
 import (
+	"github.com/alaskastorm/rest-api/db"
+
 	"reflect"
 	"testing"
 )
@@ -36,7 +38,7 @@ func Test_Employee_Insert(t *testing.T) {
 		},
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewEmployeeMongoStorage()
 
@@ -65,7 +67,7 @@ func Test_Employee_Get(t *testing.T) {
 		wantError: nil,
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewEmployeeMongoStorage()
 
@@ -94,7 +96,7 @@ func Test_Employee_Update(t *testing.T) {
 		wantError: nil,
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewEmployeeMongoStorage()
 
@@ -114,7 +116,7 @@ func Test_Employee_Delete(t *testing.T) {
 		wantError: nil,
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewEmployeeMongoStorage()
 
@@ -154,7 +156,7 @@ func Test_Employee_GetAll(t *testing.T) {
 		wantEmployees[e.wantEmployee.ID] = e.wantEmployee
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewEmployeeMongoStorage()
 

@@ -1,6 +1,7 @@
-package main
+package departamentdb
 
 import (
+	"github.com/alaskastorm/rest-api/db"
 	"reflect"
 	"testing"
 )
@@ -30,7 +31,7 @@ func Test_Departament_Insert(t *testing.T) {
 		},
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewDepartamentMongoStorage()
 
@@ -58,7 +59,7 @@ func Test_Departament_Get(t *testing.T) {
 		wantError: nil,
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewDepartamentMongoStorage()
 
@@ -112,7 +113,7 @@ func Test_Departament_Update(t *testing.T) {
 		wantError: nil,
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewDepartamentMongoStorage()
 
@@ -132,7 +133,7 @@ func Test_Departament_Delete(t *testing.T) {
 		wantError: nil,
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewDepartamentMongoStorage()
 
@@ -171,7 +172,7 @@ func Test_Departament_GetAll(t *testing.T) {
 		wantDepartaments[e.wantDepartament.ID] = e.wantDepartament
 	}
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewDepartamentMongoStorage()
 
@@ -197,7 +198,7 @@ func Test_Departament_InsertEmployeeIntoDepartament(t *testing.T) {
 	}
 	employeeID := 1
 
-	ConnectToMongo()
+	db.ConnectToMongo()
 
 	storage := NewDepartamentMongoStorage()
 
