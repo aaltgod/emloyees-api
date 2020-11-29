@@ -2,10 +2,11 @@ package db
 
 import (
 	"context"
-	"log"
-
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
+	"sort"
 )
 
 var (
@@ -27,7 +28,30 @@ func ConnectToMongo() {
 		log.Fatal(err)
 	}
 
-	EmployeeCollection = client.Database("rest_api").Collection("employees")
-	DepartamentCollection = client.Database("rest_api").Collection("departaments")
+	collections, err := client.Database("rest_api").ListCollectionNames(context.TODO(), bson.D{})
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	sort.Strings(collections)
+
+	employeesCollectionIndex := sort.SearchStrings(collections, "employees")
+	if collections[employeesCollectionIndex] != "employees" {
+		if err := client.Database("rest_api").CreateCollection(context.TODO(), "employees"); err != nil {
+			log.Fatal(err)
+		}
+		EmployeeCollection = client.Database("rest_api").Collection("employees")
+	}else {
+		EmployeeCollection = client.Database("rest_api").Collection("employees")
+	}
+
+	departamentsCollectionIndex := sort.SearchStrings(collections, "departaments")
+	if collections[departamentsCollectionIndex] != "departaments" {
+		if err := client.Database("rest_api").CreateCollection(context.TODO(), "departaments"); err != nil {
+			log.Fatal(err)
+		}
+		DepartamentCollection = client.Database("rest_api").Collection("departaments")
+	}else {
+		DepartamentCollection = client.Database("rest_api").Collection("departaments")
+	}
 }

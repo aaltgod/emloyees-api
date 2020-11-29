@@ -1,0 +1,17 @@
+version: '3.5'
+services:
+
+  database:
+    image: 'mongo'
+    container_name: 'my-mongo-container'
+    environment:
+      - MONGO_INITDB_DATABASE=rest_api
+      - MONGO_INITDB_ROOT_USERNAME=ala
+      - MONGO_INITDB_PASSWORD=supersecret
+    volumes:
+      - ./init
+      - ./mongo-volume:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+networks:
+  rest-api:
