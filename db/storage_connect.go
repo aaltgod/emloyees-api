@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	EmployeeCollection    *mongo.Collection
-	DepartamentCollection *mongo.Collection
+	EmployeeCollection   *mongo.Collection
+	DepartmentCollection *mongo.Collection
 )
 
 // ConnectToMongo ...
@@ -46,13 +46,13 @@ func ConnectToMongo() {
 		EmployeeCollection = client.Database("rest_api").Collection("employees")
 	}
 
-	departamentsCollectionIndex := sort.SearchStrings(collections, "departaments")
-	if collections[departamentsCollectionIndex] != "departaments" {
-		if err := client.Database("rest_api").CreateCollection(context.TODO(), "departaments"); err != nil {
+	departmentsCollectionIndex := sort.SearchStrings(collections, "departments")
+	if collections[departmentsCollectionIndex] != "departments" {
+		if err := client.Database("rest_api").CreateCollection(context.TODO(), "departments"); err != nil {
 			log.Fatal(err)
 		}
-		DepartamentCollection = client.Database("rest_api").Collection("departaments")
+		DepartmentCollection = client.Database("rest_api").Collection("departments")
 	}else {
-		DepartamentCollection = client.Database("rest_api").Collection("departaments")
+		DepartmentCollection = client.Database("rest_api").Collection("departments")
 	}
 }
