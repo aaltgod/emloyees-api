@@ -1,17 +1,27 @@
 version: '3.5'
 services:
 
+  rest-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5245"
+    restart: unless-stopped
+    links:
+      - database
+
   database:
-    image: 'mongo'
-    container_name: 'my-mongo-container'
+    image: mongo
+    restart: always
+    container_name: my-mongo-container
     environment:
-      - MONGO_INITDB_DATABASE=rest_api
-      - MONGO_INITDB_ROOT_USERNAME=ala
-      - MONGO_INITDB_PASSWORD=supersecret
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: supersecret
+      MONGO_INITDB_DATABASE: rest_api
     volumes:
-      - ./init
+      - ./init:/docker-entrypoint-initdb.d
       - ./mongo-volume:/data/db
     ports:
-      - '27017-27019:27017-27019'
-networks:
-  rest-api:
+      - "27027:27027"
+

@@ -17,7 +17,8 @@ var (
 // ConnectToMongo ...
 func ConnectToMongo() {
 
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	//clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://ala:secret@127.0.0.1:27027/rest_api")
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {

@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/alaskastorm/rest-api/api/handler/departamenthandler"
+	"github.com/alaskastorm/rest-api/api/handler/employeehandler"
 	"github.com/alaskastorm/rest-api/db"
 	"github.com/alaskastorm/rest-api/db/departamentdb"
 	"github.com/alaskastorm/rest-api/db/employeedb"
-	"github.com/alaskastorm/rest-api/api/handler/employeehandler"
-	"github.com/alaskastorm/rest-api/api/handler/departamenthandler"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,16 +20,16 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/api/employees", employeeHandler.GetAllEmployees)
-	router.POST("/api/employeedb", employeeHandler.CreateEmployee)
-	router.GET("/api/employeedb/:id", employeeHandler.GetEmployee)
-	router.PUT("/api/employeedb/:id", employeeHandler.UpdateEmployee)
-	router.DELETE("/api/employeedb/:id", employeeHandler.DeleteEmployee)
+	router.POST("/api/employee", employeeHandler.CreateEmployee)
+	router.GET("/api/employee/:id", employeeHandler.GetEmployee)
+	router.PUT("/api/employee/:id", employeeHandler.UpdateEmployee)
+	router.DELETE("/api/employee/:id", employeeHandler.DeleteEmployee)
 	router.GET("/api/departaments", departamentHandler.GetAllDepartaments)
-	router.POST("/api/departamentdb", departamentHandler.CreateDepartament)
-	router.GET("/api/departamentdb/:id", departamentHandler.GetDepartament)
-	router.PUT("/api/departamentdb/:id", departamentHandler.UpdateDepartament)
-	router.DELETE("/api/departamentdb/:id", departamentHandler.DeleteDepartament)
-	router.PUT("/api/departamentdb/:id/:employee_id", departamentHandler.AddEmployeeToDepartament)
+	router.POST("/api/departament", departamentHandler.CreateDepartament)
+	router.GET("/api/departament/:id", departamentHandler.GetDepartament)
+	router.PUT("/api/departament/:id", departamentHandler.UpdateDepartament)
+	router.DELETE("/api/departament/:id", departamentHandler.DeleteDepartament)
+	router.PUT("/api/departament/:id/:employee_id", departamentHandler.AddEmployeeToDepartament)
 
-	router.Run(":5001")
+	router.Run(":5245")
 }
